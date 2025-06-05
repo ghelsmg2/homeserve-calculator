@@ -91,12 +91,17 @@
             font-size: 14px;
             color: #718096;
         }
+
+	html {
+ 	   scroll-behavior: smooth;
+	}
         
         .comparison-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin-top: 30px;
+	    scroll-margin-top: 20px;
         }
         
         .comparison-card {
@@ -448,36 +453,41 @@
             }
         };
 
-        function setScenario(scenario) {
-            // Update button states
-            document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.closest('.scenario-btn').classList.add('active');
-            
-            // Update costs
-            const data = scenarios[scenario];
-            document.getElementById('without-cost').textContent = `£${data.without.total.toLocaleString()}`;
-            document.getElementById('with-cost').textContent = `£${data.with.total.toLocaleString()}`;
-            
-            // Update breakdowns
-            document.getElementById('without-breakdown').innerHTML = 
-                data.without.breakdown.map(item => `<li>${item}</li>`).join('');
-            document.getElementById('with-breakdown').innerHTML = 
-                data.with.breakdown.map(item => `<li>${item}</li>`).join('');
-            
-            // Calculate savings
-            const savings = data.without.total - data.with.total;
-            document.getElementById('savings').textContent = `£${savings.toLocaleString()}`;
-            
-            // Show BOXT section for heat pump
-            const boxtSection = document.getElementById('boxt-section');
-            if (scenario === 'heat-pump') {
-                boxtSection.style.display = 'block';
-                updateSavings();
-            } else {
-                boxtSection.style.display = 'none';
-            }
-        }
-
+	function setScenario(scenario) {
+	    // Update button states
+	    document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+	    event.target.closest('.scenario-btn').classList.add('active');
+    
+	    // Update costs
+	    const data = scenarios[scenario];
+	    document.getElementById('without-cost').textContent = `£${data.without.total.toLocaleString()}`;
+ 	   document.getElementById('with-cost').textContent = `£${data.with.total.toLocaleString()}`;
+    
+	    // Update breakdowns
+	    document.getElementById('without-breakdown').innerHTML = 
+ 	       data.without.breakdown.map(item => `<li>${item}</li>`).join('');
+	    document.getElementById('with-breakdown').innerHTML = 
+ 	       data.with.breakdown.map(item => `<li>${item}</li>`).join('');
+    
+  	  // Calculate savings
+  	  const savings = data.without.total - data.with.total;
+ 	   document.getElementById('savings').textContent = `£${savings.toLocaleString()}`;
+    
+ 	   // Show BOXT section for heat pump
+  	  const boxtSection = document.getElementById('boxt-section');
+  	  if (scenario === 'heat-pump') {
+  	      boxtSection.style.display = 'block';
+  	      updateSavings();
+  	  } else {
+  	      boxtSection.style.display = 'none';
+ 	   }
+    
+  	  // Smooth scroll to comparison section
+  	  document.querySelector('.comparison-grid').scrollIntoView({
+  	      behavior: 'smooth',
+  	      block: 'start'
+  	  });
+	}
         function updateSavings() {
             const currentBill = document.getElementById('bill-slider').value;
             const newBill = Math.round(currentBill * 0.6); // Heat pumps typically 40% more efficient
